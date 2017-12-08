@@ -58,6 +58,8 @@ should be quick if you already completed the lab on load balancing):
    solution for a production environment? What are the main problems
    when deploying it in a production environment?
 
+   We think we can't use the current solution for production environment. If we decide to add a server to the infrastructure, we need to edit the configuration file of HAProxy. 
+
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new
    `webapp` container to the infrastructure. Give the exact steps of
    what you have to do without modifiying the way the things are
@@ -116,7 +118,7 @@ should be quick if you already completed the lab on load balancing):
 2. Give the URL of your repository URL in the lab report.
 
 [URL of our repository](https://github.com/galahad1/Teaching-HEIGVD-AIT-2016-Labo-Docker)
- 
+
 ### <a name="task-1"></a>Task 1: Add a process supervisor to run several processes
 
 **Deliverables**:
