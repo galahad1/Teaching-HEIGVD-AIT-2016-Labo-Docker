@@ -125,7 +125,17 @@ should be quick if you already completed the lab on load balancing):
 
 1. Take a screenshot of the stats page of HAProxy at http://192.168.42.42:1936. You should see your backend nodes. It should be really similar to the screenshot of the previous task.
 
+![HAProxy](images/task_1_1.png)
+
 2. Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.
+
+The s6-overlay has a folder at /etc/services.d for you to create service directories at. Each service should be a directory, and each directory should have a run script.
+Each service is started with a completely blank environment, and it’s up to you to setup the environment variables. When the container starts up, all the environment variables are saved to /var/run/s6/container_environment/. The s6-overlay has a script to re-import all of those environment variables – with-contenv. It loads the environment variables, then chainloads into another program.
+
+A container’s main running process is the ENTRYPOINT and/or CMD at the end of the Dockerfile. It is generally recommended that you separate areas of concern by using one service per container. That service may fork into multiple processes (for example, Apache web server starts multiple worker processes). It’s easy to have multiple processes.
+We are installing a process supervisor to have the possibility to run one or more processes at a time in a Docker container. It will give us the possibility manage differents applications processes.
+
+<a name="M5"></a>**[M5]**
 
 ### <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server cluster
 
@@ -154,6 +164,10 @@ should be quick if you already completed the lab on load balancing):
    website to get more details about the `GOSSIP` protocol used in
    `Serf`. Try to find other solutions that can be used to solve
    similar situations where we need some auto-discovery mechanism.
+
+The Serf agents talk to each other using a decentralized peer-to-peer protocol to exchange information. They form a cluster of nodes. Serf uses a gossip protocol to broadcast messages to the cluster. The main information they exchange is the existence of nodes in the cluster and what their IP addresses are. When a node appears or disappears the Serf agents tell each other about the event. When the information arrives at the load balancer we will be able to react accordingly. A Serf agents can trigger the execution of local scripts when it receives an event.
+
+A gossip protocol is a procedure or process of computer-computer communication that is based on the way social networks disseminate information or how epidemics spread.
 
 ### <a name="task-3"></a>Task 3: React to membership changes
 
