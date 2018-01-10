@@ -224,8 +224,7 @@ A gossip protocol is a procedure or process of computer-computer communication t
 
    You can find the config file when only the ha container is started at `/logs/task_4/configFileHa`
 
-    You can find the config file when ha and s1 containers are started at `/logs/task_4/configFileS1`
-
+   You can find the config file when ha and s1 containers are started at `/logs/task_4/configFileS1`
 
     You can find the config file when ha, s1 and s2 containers are started at `/logs/task_4/configFileS2`
 
