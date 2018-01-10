@@ -58,7 +58,7 @@ should be quick if you already completed the lab on load balancing):
    solution for a production environment? What are the main problems
    when deploying it in a production environment?
 
-   We think we can't use the current solution for production environment. If we decide to add a server to the infrastructure, we need to edit the configuration file of HAProxy. 
+   We think we can't use the current solution for production environment. If we decide to add a server to the infrastructure, we need to edit the configuration file of HAProxy.
 
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new
    `webapp` container to the infrastructure. Give the exact steps of
@@ -176,8 +176,14 @@ A gossip protocol is a procedure or process of computer-computer communication t
 1. Provide the docker log output for each of the containers:  `ha`, `s1` and `s2`.
    Put your logs in the `logs` directory you created in the previous task.
 
-2. Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log`
-   file present in the container. Put the logs in the `logs` directory in your repo.
+   You can find the docker log output for each containers in the `/logs/task_3/` folder.
+
+
+2. Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container. Put the logs in the `logs` directory in your repo.
+
+  You can find the log from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container at `/logs/task_3/serf_logs`
+
+
 
 ### <a name="task-4"></a>Task 4: Use a template engine to easily generate configuration files
 
@@ -215,11 +221,29 @@ A gossip protocol is a procedure or process of computer-computer communication t
    after each step.  Place the output into the `logs` folder like you
    already did for the Docker logs in the previous tasks. Three files
    are expected.
-   
-   In addition, provide a log file containing the output of the 
+
+   You can find the config file when only the ha container is started at `/logs/task_4/configFileHa`
+
+    You can find the config file when ha and s1 containers are started at `/logs/task_4/configFileS1`
+
+
+    You can find the config file when ha, s1 and s2 containers are started at `/logs/task_4/configFileS2`
+
+
+   In addition, provide a log file containing the output of the
    `docker ps` console and another file (per container) with
    `docker inspect <container>`. Four files are expected.
-   
+
+
+   You can find the `docker ps` log file at `/logs/task_4/dockerPs`
+
+   You can find the `docker inspect ha` log file at `/logs/task_4/inspectHa`
+
+   You can find the `docker inspect s1` log file at `/logs/task_4/inspectS1`
+
+   You can find the `docker inspect s2` log file at `/logs/task_4/inspectS2`
+
+
 4. Based on the three output files you have collected, what can you
    say about the way we generate it? What is the problem if any?
 
@@ -229,20 +253,45 @@ A gossip protocol is a procedure or process of computer-computer communication t
 
 1. Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in
    the `ha` container after each step. Three files are expected.
-   
-   In addition, provide a log file containing the output of the 
+
+   You can find the config file when only the ha container is started at `/logs/task_5/step_1/haOnly`
+
+    You can find the config file when ha and s1 containers are started at `/logs/task_5/step_1/s1`
+
+
+    You can find the config file when ha, s1 and s2 containers are started at `/logs/task_5/step_1/s2`
+
+   In addition, provide a log file containing the output of the
    `docker ps` console and another file (per container) with
    `docker inspect <container>`. Four files are expected.
+
+    You can find the `docker ps` log file at `/logs/task_5/step_1/docker_ps`
+
+    You can find the `docker inspect ha` log file at `/logs/task_5/step_1/inspectHa`
+
+    You can find the `docker inspect s1` log file at `/logs/task_5/step_1/inspectS1`
+
+    You can find the `docker inspect s2` log file at `/logs/task_5/step_1/inspectS2`
 
 2. Provide the list of files from the `/nodes` folder inside the `ha` container.
    One file expected with the command output.
 
+   You can find the `ls /nodes` log file at `/logs/task_5/step_2/nodes`
+
+
 3. Provide the configuration file after you stopped one container and
    the list of nodes present in the `/nodes` folder. One file expected
    with the command output. Two files are expected.
-   
-    In addition, provide a log file containing the output of the 
+
+   You can find the config file at `/logs/task_5/step_3/configFile`
+
+   You can find the list of nodes present at `logs/task_5/step_3/nodes`
+
+    In addition, provide a log file containing the output of the
    `docker ps` console. One file expected.
+
+   You can find the `docker ps` log file at `/logs/task_5/step_3/docker_ps`
+
 
 4. (Optional:) Propose a different approach to manage the list of backend
    nodes. You do not need to implement it. You can also propose your
@@ -257,11 +306,29 @@ A gossip protocol is a procedure or process of computer-computer communication t
    applications running. Additional screenshots are welcome to see a
    sequence of experimentations like shutting down a node and starting
    more nodes.
-   
-   Also provide the output of `docker ps` in a log file. At least 
+
+   On the screen below you can the HAProxy stat page with five web application running.
+   ![HAProxy](images/task_6_1.png)
+
+   On the screen below we stopped a few web application.
+   ![HAProxy](images/task_6_2.png)
+
+   On this screen we restarted some other web applications.
+   ![HAProxy](images/task_6_3.png)
+
+
+   Also provide the output of `docker ps` in a log file. At least
    one file is expected. You can provide one output per step of your
    experimentation according to your screenshots.
-   
+
+   You can find the `docker ps` log file with the five web application running at `/logs/task_6/step_1/1_multiple_nodes/docker_ps`
+
+
+   You can find the `docker ps` log file when we stopped a few applications at `/logs/task_6/step_1/2_down_some_nodes/docker_ps`
+
+   You can find the `docker ps` log file after we started again some other applications at `/logs/task_6/step_1/3_up_again/docker_ps`
+
+
 2. Give your own feelings about the final solution. Propose
    improvements or ways to do the things differently. If any, provide
    references to your readings for the improvements.
@@ -269,6 +336,10 @@ A gossip protocol is a procedure or process of computer-computer communication t
 3. (Optional:) Present a live demo where you add and remove a backend container.
 
 ### <a name="difficulties"></a>Difficulties
+
+- parfois consigne pas tres claires, il etait difficile de savoir quoi modifier.
+
+
 
 ### <a name="conclusion"></a>Conclusion
 
