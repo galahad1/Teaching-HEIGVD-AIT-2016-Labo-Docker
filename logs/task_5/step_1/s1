@@ -106,10 +106,13 @@ backend nodes
 
     # Define the list of nodes to be in the balancing mechanism
     # http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4-server
-    # HANDLEBARS START
-    # TODO: [CFG] Remove all the servers
+    # HANDLEBARS START 
+    
+    server 68122599cf5b 172.18.0.3:3000 check
+    
     # HANDLEBARS END
 
 # Other links you will need later for this lab
 #
 # About cookies: http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4-cookie
+
