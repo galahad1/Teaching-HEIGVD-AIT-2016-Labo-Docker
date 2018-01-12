@@ -215,9 +215,10 @@ We did not have difficulties because there are pretty good tutorials over the In
 
    squashing: the aim is to have an image with fewer and smaller layers. All of the layers beneath the initial FROM layer are squashed into a single layer. Other specific layers are also preserved. Source: http://jasonwilder.com/blog/2014/08/19/squashing-docker-images/
 
-2. Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images (wget curl vim rsyslog, ...). We can use an option to avoid installation of these package with --no-install-recommends.
+2. Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.
 
-   First of all, we have to make all instructions in one commands. It will reduce the number of layers of an image. Next, we could shrink the size of the image by removing all packages that are useless. Finally, we could separate instructions to permit to Docker to cache reusable layer. Like this, when Docker builds an image and had already cached one of the layers, it will simply reuse it.
+   First of all, we have to make all instructions in one commands. It will reduce the number of layers of an image. Next, we could shrink the size of the image by removing all packages that are useless
+   (wget curl vim rsyslog, ...). We can use an option to avoid installation of these package with --no-install-recommends. Finally, we could separate instructions to permit Docker to cache reusable layer. Like this, when Docker builds an image and had already cached one of the layers needed, it will simply reuse it.
 
 3. Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
 
