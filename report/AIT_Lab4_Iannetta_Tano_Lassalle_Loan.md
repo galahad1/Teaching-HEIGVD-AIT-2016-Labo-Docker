@@ -24,6 +24,8 @@ You will find this lab [on GitHub](https://github.com/SoftEng-HEIGVD/Teaching-HE
 
 ### <a name="introduction"></a>Introduction
 
+In this lab, we use the previous lab to make an architecture more adapted for production environment. The aim of the lab is to make the load balancing process more automatic.
+
 #### <a name="pedagogical-objectives"></a>Pedagogical objectives
 
 * Build your own Docker images
@@ -51,84 +53,45 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 
 1. <a name="M1"></a>**[M1]** Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?
 
-   We think we can't use the current solution for production environment. If we decide to add a server to the infrastructure, we need to do a lot of work. We must to edit the configuration file of HAProxy and declare each server manually. It's a lot of work to set up and maintain.
+   We think we can't use the current solution for production environment. The current solution is a static configuration. If we decide to add a server to the infrastructure, we need to do a lot of work. We must to edit the configuration file of HAProxy and declare each server manually. If the server shutdown or crash, we need to kill container and launch a new one. All this actions are done manually. It's a lot of work to set up and maintain.
 
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new
-   `webapp` container to the infrastructure. Give the exact steps of
-   what you have to do without modifiying the way the things are
-   done. Hint: You probably have to modify some configuration and
-   script files in a Docker image.
+   `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
 
-   We need to change ha/config/haproxy.cfg file
-   and add a new line : 
+   1. Edit ha/config/haproxy.cfg file to add a server s3 :
    ```bash
-      server s3 <s3>:3000 check
+   server s3 <s3>:3000 check
    ```
-   Same thing in the ha/scripts/run.sh file:
+
+   2. Edit ha/scripts/run.sh file to change port of server
    ```bash
    sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg
    ```
-   Since we modify the config of ha container, we need to re-build it. When 
-   it's done, we can normally run the ha container and don't forget to run also
-   the new server s3.
 
-3. <a name="M3"></a>**[M3]** Based on your previous answers, you have
-   detected some issues in the current solution. Now propose a better
-   approach at a high level.
+   After modifications of this file, we need to re-build it. When it's done, we can normally run the ha container. Also, we need to run also the new server s3.
 
-   The configuration should not be static but dynamic.
-   We should use a tool or a program to communicate with te load balancer to tell
-   it which server are up or down. Thanks to this, the configuration (when a new 
-   node is created or when one is down) will be done automatically and it would be 
-   less painful for the system administrator. 
+3. <a name="M3"></a>**[M3]** Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.
 
-4. <a name="M4"></a>**[M4]** You probably noticed that the list of web
-  application nodes is hardcoded in the load balancer
-  configuration. How can we manage the web app nodes in a more dynamic
-  fashion?
+  The configuration should not be static but dynamic. With this current solution, we need to add new containers manually. It could be interesting to add new containers dynamically when the traffic increases. Moreover, it could be wise to launch a new container automatically when one crashes. This solution will be less painful for the system administrator.
 
-  As said previously, we should user a special tool that 
-  will say to the load balancer all servers that are connected. For this lab, we 
-  will be introduced to the serf agent. Basically, its job is to notify the load 
-  balancer when a node is up or down.
+4. <a name="M4"></a>**[M4]** You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?
 
-5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a
-   typical infrastructure we tend to have not only one main process
-   (like the web server or the load balancer) running, but a few
-   additional processes on the side to perform management tasks.
+  It should be possible to use a way that will tell the load balancer what servers are connected or not. In this lab, we use Serf Agent.
 
-   For example to monitor the distributed system as a whole it is
-   common to collect in one centralized place all the logs produced by
-   the different machines. Therefore we need a process running on each
-   machine that will forward the logs to the central place. (We could
-   also imagine a central tool that reaches out to each machine to
-   gather the logs. That's a push vs. pull problem.) It is quite
-   common to see a push mechanism used for this kind of task.
+5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks.
 
-   Do you think our current solution is able to run additional
-   management processes beside the main web server / load balancer
-   process in a container? If no, what is missing / required to reach
-   the goal? If yes, how to proceed to run for example a log
-   forwarding process?
+   For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task.
+
+   Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
 
    For now, only one process can run. We have to work around this problem to log the nodes. This solution would help to maintain correctly our application and keep a trace automatically.
+   To run multiple processes in one container, we need a process supervisor.
 
-6. <a name="M6"></a>**[M6]** In our current solution, although the
-   load balancer configuration is changing dynamically, it doesn't
-   follow dynamically the configuration of our distributed system when
-   web servers are added or removed. If we take a closer look at the
-   `run.sh` script, we see two calls to `sed` which will replace two
-   lines in the `haproxy.cfg` configuration file just before we start
-   `haproxy`. You clearly see that the configuration file has two
-   lines and the script will replace these two lines.
+6. <a name="M6"></a>**[M6]** In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the `run.sh` script, we see two calls to `sed` which will replace two lines in the `haproxy.cfg` configuration file just before we start `haproxy`. You clearly see that the configuration file has two lines and the script will replace these two lines.
 
-   What happens if we add more web server nodes? Do you think it is
-   really dynamic? It's far away from being a dynamic
-   configuration. Can you propose a solution to solve this?
+   What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?
 
-   No, it's not, because we need to change two files to add more nodes 
-   (see answer 2). A better solution would be that each server announces
-   itself to the other and the load balancer when it's up. 
+   In our current solution, we need to change two files to add more nodes. A really dynamic solution would be that each server announces itself to the other and the load balancer when it's up. 
 
 #### <a name="install-tools"></a>Install the tools
 
@@ -384,13 +347,11 @@ We did not have difficulties because there are pretty good tutorials over the In
    On this screen we restarted some other web applications.
    ![HAProxy](images/task_6_3.png)
 
-
    Also provide the output of `docker ps` in a log file. At least
    one file is expected. You can provide one output per step of your
    experimentation according to your screenshots.
 
    You can find the `docker ps` log file with the five web application running at `/logs/task_6/step_1/1_multiple_nodes/docker_ps`
-
 
    You can find the `docker ps` log file when we stopped a few applications at `/logs/task_6/step_1/2_down_some_nodes/docker_ps`
 
