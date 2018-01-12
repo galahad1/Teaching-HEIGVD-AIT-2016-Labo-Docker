@@ -265,7 +265,7 @@ We did not have difficulties because there are pretty good tutorials over the In
   An other problem with a merge of commands, like presented here, is that it quickly becomes not trivial to read the Dockerfile when there are a lot of instructions.  
   Regarding the apt-get update and apt-get install, there are a lot of articles, saying that they should be put in one RUN command, because of a cache reason. A single apt-get update will be cached, as said previously, and not re-run every time you need to install something. So it might download an old version of the package.
 
-  Squash or flatten mean that multiples layers of an image will become one single layer. The result of this is to reduce the size of an image. It is a very powerful technique, howerver, it should not be used for every image. You will probably sacrify some functionnality in the process, so it's important to think about it twice. But, let say, if we use someonelse's image and it's too heavy and we want to optimize its size, it is a good tool to use.
+  Squash or flatten mean that multiples layers of an image will become one single layer. The result of this is to reduce the size of an image. It is a very powerful technique, however, it should not be used for every image. You will probably sacrify some functionality in the process, so it's important to think about it twice. But, let say, if we use someonelse's image and it's too heavy and we want to optimize its size, it is a good tool to use.
 
 2. Propose a different approach to architecture our images to be able
    to reuse as much as possible what we have done. Your proposition
