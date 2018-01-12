@@ -58,7 +58,12 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new
    `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
 
+<<<<<<< HEAD
    1. Edit ha/config/haproxy.cfg file to add a server s3 :
+=======
+   We need to change ha/config/haproxy.cfg file
+   and add a new line :
+>>>>>>> d6f1cdd246936aabae4774755219b7e44f290739
    ```bash
    server s3 <s3>:3000 check
    ```
@@ -67,6 +72,7 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
    ```bash
    sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg
    ```
+<<<<<<< HEAD
 
    After modifications of this file, we need to re-build it. When it's done, we can normally run the ha container. Also, we need to run also the new server s3.
 
@@ -83,6 +89,50 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
    For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task.
 
    Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
+=======
+   Since we modify the config of ha container, we need to re-build it. When
+   it's done, we can normally run the ha container and don't forget to run also
+   the new server s3.
+
+3. <a name="M3"></a>**[M3]** Based on your previous answers, you have
+   detected some issues in the current solution. Now propose a better
+   approach at a high level.
+
+   The configuration should not be static but dynamic.
+   We should use a tool or a program to communicate with te load balancer to tell
+   it which servers are up or down. Thanks to this, the configuration (when a new
+   node is created or when one is down) will be done automatically and it would be
+   less painful for the system administrator.
+
+4. <a name="M4"></a>**[M4]** You probably noticed that the list of web
+  application nodes is hardcoded in the load balancer
+  configuration. How can we manage the web app nodes in a more dynamic
+  fashion?
+
+  As said previously, we should user a special tool that
+  will say to the load balancer all servers that are connected. For this lab, we
+  will be introduced to the serf agent. Basically, its job is to notify the load
+  balancer when a node is up or down.
+
+5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a
+   typical infrastructure we tend to have not only one main process
+   (like the web server or the load balancer) running, but a few
+   additional processes on the side to perform management tasks.
+
+   For example to monitor the distributed system as a whole it is
+   common to collect in one centralized place all the logs produced by
+   the different machines. Therefore we need a process running on each
+   machine that will forward the logs to the central place. (We could
+   also imagine a central tool that reaches out to each machine to
+   gather the logs. That's a push vs. pull problem.) It is quite
+   common to see a push mechanism used for this kind of task.
+
+   Do you think our current solution is able to run additional
+   management processes beside the main web server / load balancer
+   process in a container? If no, what is missing / required to reach
+   the goal? If yes, how to proceed to run for example a log
+   forwarding process?
+>>>>>>> d6f1cdd246936aabae4774755219b7e44f290739
 
    For now, only one process can run. We have to work around this problem to log the nodes. This solution would help to maintain correctly our application and keep a trace automatically.
    To run multiple processes in one container, we need a process supervisor.
@@ -91,7 +141,13 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 
    What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?
 
+<<<<<<< HEAD
    In our current solution, we need to change two files to add more nodes. A really dynamic solution would be that each server announces itself to the other and the load balancer when it's up. 
+=======
+   No, it's not, because we need to change two files to add more nodes
+   (see answer 2). A better solution would be that each server announces
+   itself to the other and the load balancer when it's up.
+>>>>>>> d6f1cdd246936aabae4774755219b7e44f290739
 
 #### <a name="install-tools"></a>Install the tools
 
@@ -127,15 +183,15 @@ c160fa8469fa        softengheigvd/webapp   "/scripts/run.sh"        24 seconds a
 
 2. Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.
 
-The s6-overlay has a folder at /etc/services.d for you to create service directories at. Each service should be a directory, and each directory should have a run script.
+The s6-overlay has a folder at /etc/services.d to create service directories at. Each service should be a directory, and each directory should have a run script.
 Each service is started with a completely blank environment, and it’s up to you to setup the environment variables. When the container starts up, all the environment variables are saved to /var/run/s6/container_environment/. The s6-overlay has a script to re-import all of those environment variables – with-contenv. It loads the environment variables, then chainloads into another program.
 
-A container’s main running process is the ENTRYPOINT and/or CMD at the end of the Dockerfile. It is generally recommended that you separate areas of concern by using one service per container. That service may fork into multiple processes (for example, Apache web server starts multiple worker processes). It’s easy to have multiple processes.
-We are installing a process supervisor to have the possibility to run one or more processes at a time in a Docker container. It will give us the possibility manage differents applications processes. With a supervisor, we will able to run a server and a process to log it.
+A container’s main running process is the ENTRYPOINT and/or CMD instruction at the end of the Dockerfile. It is generally recommended that you separate areas of concern by using one service per container. That service may fork into multiple processes (for example, Apache web server starts multiple worker processes). It therefore is easy to have multiple processes.
+We are installing a process supervisor to have the possibility to run one or more processes at a time in a Docker container. It will give us the possibility to manage different application's processes. With a supervisor, we will be able to run a server and a process to log it.
 
 We did not have difficulties because there are pretty good tutorials over the Internet to explain everything.
 
-### <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server cluster
+### <a name="task-2"></a>Task 2: Add a tool to manage membership in the web server clusterdifferentdifferent
 
 > In this task, we will focus on how to make our infrastructure more flexible so that we can dynamically add and remove web servers. To achieve this goal, we will use a tool that allows each node to know which other nodes exist at any given time.
 
@@ -147,12 +203,13 @@ We did not have difficulties because there are pretty good tutorials over the In
    report. For each lab task create a folder and name it using the
    task number. No need to create a folder when there are no logs.
 
-   The logs are available under /logs/folder, like the following hierarchy:
+   The logs are available under the logs folder, hierarchised as follow:
 
    ```
    |-- root folder
      |-- logs
        |-- task_2
+       |-- task_3
        |-- task_4
        |-- task_5
    ```
@@ -162,23 +219,23 @@ We did not have difficulties because there are pretty good tutorials over the In
 
    The problem with the current solution is that a node must join an already existing node.
    If he does not join another node, he will create his own cluster. If HAProxy is executed first, the child nodes will not be linked to it.
-   That why we need to run HAProxy first.
+   That's why we need to run HAProxy first.
 
 3. Give an explanation on how `Serf` is working. Read the official
    website to get more details about the `GOSSIP` protocol used in
    `Serf`. Try to find other solutions that can be used to solve
    similar situations where we need some auto-discovery mechanism.
 
-   Serf is a tool for cluster membership, failure detection, and orchestration that is decentralized, fault-tolerant and highly available.
+   Serf is a tool for cluster membership, failure detection and decentralized orchestration; it is fault-tolerant and highly available.
    Each nodes execute a serf agent that talk to each other using a decentralized peer-to-peer protocol to exchange information. They form a cluster of nodes. Serf uses a gossip protocol to broadcast messages to the cluster. The main information they exchange is the existence of nodes in the cluster and what their IP addresses are. When a node appears or disappears the Serf agents tell each other about the event. When the information arrives at the load balancer we will be able to react accordingly. A Serf agents can trigger the execution of local scripts when it receives an event.
 
-   Serf uses a gossip channel. A gossip protocol is a procedure or process of computer-computer communication that is based on the way social networks disseminate information or how epidemics spread. It informs all others nodes in the cluster each time a node enters or leaves. Thos channel uses UDP protocol.
+   Serf uses a gossip channel. A gossip protocol is a procedure or process of computer-computer communication that is based on the way social networks disseminate information or how epidemics spread. It informs all others nodes in the cluster each time a node enters or leaves. Those channels use UDP protocol.
 
 ### <a name="task-3"></a>Task 3: React to membership changes
 
 > We reached a state where we have nearly all the pieces in place to make the infrastructure really dynamic. At the moment, we are missing the scripts that will react to the events reported by `Serf`, namely member `leave` or member `join`.
 
-> We will start by creating the scripts in [ha/scripts](ha/scripts). So create two files in this directory and set them as executable. 
+> We will start by creating the scripts in [ha/scripts](ha/scripts). So create two files in this directory and set them as executable.
 
 **Deliverables**:
 
@@ -223,26 +280,26 @@ We did not have difficulties because there are pretty good tutorials over the In
   size. Try to find them. They are talking about `squashing` or
   `flattening` images.
 
-  A Docker image is built up from layers. Each layer is an instruction in the Dockerfile. It is a better practice to have a minimal number of layers in an image, because the size can become fat really quickly. That's why put all commands in one RUN is a better practice. It will reduce the size of the image. On an other hand, each layer is cached, so when an image is re-built, it could go faster to not re-download all the packages. So in this case, the first solution is better. 
-  An other problem with a merge of commands, like presented here, is that it becomes quickly not really easy to read when there is a lot of instructions.  
-  Regarding the apt-get update and apt-get install, there are a lot of articles, saying that they should be put in one RUN command, because of a cache reason. A single apt-get update will be cached, as said previously, and not re-run every time you need to install something. So it might download an old version of the package. 
+  A Docker image is built up from layers. Each layer is an instruction in the Dockerfile. It is a better practice to have a minimal number of layers in an image, because the size can become important really quickly. That's why putting all commands in one RUN instruction is a better practice; it will reduce the size of the image. On the other hand, each layer is cached, so when an image is re-built, it could be faster to not re-download all the packages. So in our case, the first solution is better.
+  An other problem with a merge of commands, like presented here, is that it quickly becomes not trivial to read the Dockerfile when there are a lot of instructions.  
+  Regarding the apt-get update and apt-get install, there are a lot of articles, saying that they should be put in one RUN command, because of a cache reason. A single apt-get update will be cached, as said previously, and not re-run every time you need to install something. So it might download an old version of the package.
 
-  Squash or flatten mean that multiples layers of an image will become one single layer. The result of this is to reduce the size of an image. It is a very powerful technique, howerver, it should not be used for every image. You will probably sacrify some functionnality in the process, so it's important to think about it twice. But, let say, if we use someonelse's image and it's too heavy and we want to optimize its size, it is a good tool to use. 
+  Squash or flatten mean that multiples layers of an image will become one single layer. The result of this is to reduce the size of an image. It is a very powerful technique, however, it should not be used for every image. You will probably sacrify some functionality in the process, so it's important to think about it twice. But, let say, if we use someonelse's image and it's too heavy and we want to optimize its size, it is a good tool to use.
 
 2. Propose a different approach to architecture our images to be able
    to reuse as much as possible what we have done. Your proposition
    should also try to avoid as much as possible repetitions between
    your images.
 
-   First, we have to do what is explained in the previous question. Making 
+   First, we have to do what is explained in the previous question. Making
    all instructions in one commands. It will reduce the number of layers. Then,   
-   we could optimize the size of the image removing all the packages we installed 
-   and that we no longer need (wget curl vim rsyslog, ...) or use an option such as 
+   we could optimize the size of the image removing all the packages we installed
+   and that we no longer need (wget curl vim rsyslog, ...) or use an option such as
    --no-install-recommends.  
-   Since we know that Docker caches each layers and reuses them when it is needed, we 
+   Since we know that Docker caches each layers and reuses them when it is needed, we
    could separated the instruction that will be-reused in other Dockerfiles. Like this,
    when Docker builds an image and had already cached one of the layers, it will simply
-   reuse it. 
+   reuse it.
 
 3. Provide the `/tmp/haproxy.cfg` file generated in the `ha` container
    after each step.  Place the output into the `logs` folder like you
@@ -292,24 +349,26 @@ We did not have difficulties because there are pretty good tutorials over the In
 
    You can find the config file when only the ha container is started at `/logs/task_5/step_1/haOnly`
 
-    You can find the config file when ha and s1 containers are started at `/logs/task_5/step_1/s1`
+   You can find the config file when ha and s1 containers are started at `/logs/task_5/step_1/s1`
 
-
-    You can find the config file when ha, s1 and s2 containers are started at `/logs/task_5/step_1/s2`
+   You can find the config file when ha, s1 and s2 containers are started at `/logs/task_5/step_1/s2`
 
    In addition, provide a log file containing the output of the
    `docker ps` console and another file (per container) with
    `docker inspect <container>`. Four files are expected.
 
+   You can find the `docker ps` log file at `/logs/task_5/step_1/docker_ps`
+
+   You can find the `docker inspect ha` log file at `/logs/task_5/step_1/inspectHa`
+
+   You can find the `docker inspect s1` log file at `/logs/task_5/step_1/inspectS1`
+
+   You can find the `docker inspect s2` log file at `/logs/task_5/step_1/inspectS2`
+
+
 2. Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.
 
-    You can find the `docker ps` log file at `/logs/task_5/step_1/docker_ps`
-
-    You can find the `docker inspect ha` log file at `/logs/task_5/step_1/inspectHa`
-
-    You can find the `docker inspect s1` log file at `/logs/task_5/step_1/inspectS1`
-
-    You can find the `docker inspect s2` log file at `/logs/task_5/step_1/inspectS2`
+   You can find the list of nodes present at `logs/task_5/step_2/nodes`
 
 
 3. Provide the configuration file after you stopped one container and
@@ -322,7 +381,10 @@ We did not have difficulties because there are pretty good tutorials over the In
 
     In addition, provide a log file containing the output of the
    `docker ps` console. One file expected.
-   
+
+   You can find the `docker ps` log file at `/logs/task_5/step_3/docker_ps`
+
+
 4. (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
 
 ### <a name="task-6"></a>Task 6: Make the load balancer automatically reload the new configuration
@@ -369,12 +431,12 @@ We did not have difficulties because there are pretty good tutorials over the In
 
 ### <a name="difficulties"></a>Difficulties
 
-One of our difficulties was finding all the information we needed to understand the lab. Some times we needed to find information on the web, but it was accurate enough to enlighten us. We found that the instructions were not very clear some times.
+One of our difficulties was finding all the information we needed to understand the lab. Sometimes we needed to find information on the web, but it was accurate enough to enlighten us. We found that the instructions were not very clear sometimes.
 But after all, we managed to get by.
 
 ### <a name="conclusion"></a>Conclusion
 
-In this lab, we learnt how to use the HAProxy and how to configure a cluster of nodes. It was interesting, especially about Docker and load balancing. We think that is possible to improve the infrastructure by adding more automation.
+In this lab, we learned how to use the HAProxy and how to configure a cluster of nodes. It was interesting, especially about Docker and load balancing. We think that is possible to improve the infrastructure by adding more automation.
 The lab was quite long to complete but in the end we learned a lot of useful things for our future work.
 
 ### <a name="sources"></a>Sources
