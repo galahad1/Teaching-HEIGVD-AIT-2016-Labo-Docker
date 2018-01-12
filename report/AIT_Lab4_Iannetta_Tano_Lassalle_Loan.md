@@ -141,11 +141,7 @@ We did not have difficulties because there are pretty good tutorials over the In
 
 **Deliverables**:
 
-1. Provide the docker log output for each of the containers: `ha`,
-   `s1` and `s2`. You need to create a folder `logs` in your
-   repository to store the files separately from the lab
-   report. For each lab task create a folder and name it using the
-   task number. No need to create a folder when there are no logs.
+1. Provide the docker log output for each of the containers: `ha`, `s1` and `s2`. You need to create a folder `logs` in your repository to store the files separately from the lab report. For each lab task create a folder and name it using the task number. No need to create a folder when there are no logs.
 
    The logs are available under the logs folder, hierarchised as follow:
 
@@ -158,12 +154,9 @@ We did not have difficulties because there are pretty good tutorials over the In
        |-- task_5
    ```
 
-2. Give the answer to the question about the existing problem with the
-   current solution.
+2. Give the answer to the question about the existing problem with the current solution.
 
-   The problem with the current solution is that a node must join an already existing node.
-   If he does not join another node, he will create his own cluster. If HAProxy is executed first, the child nodes will not be linked to it.
-   That's why we need to run HAProxy first.
+   The problem with the current solution is that a node must join an already existing node. If he does not join another node, he will create his own cluster. If HAProxy is executed first, the child nodes will not be linked to it. That's why we need to run HAProxy first.
 
 3. Give an explanation on how `Serf` is working. Read the official
    website to get more details about the `GOSSIP` protocol used in
@@ -188,12 +181,9 @@ We did not have difficulties because there are pretty good tutorials over the In
 
    You can find the docker log output for each containers in the `/logs/task_3/` folder.
 
-
 2. Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container. Put the logs in the `logs` directory in your repo.
 
-  You can find the log from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container at `/logs/task_3/serf_logs`
-
-
+   You can find the log from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container at `/logs/task_3/serf_logs`
 
 ### <a name="task-4"></a>Task 4: Use a template engine to easily generate configuration files
 
@@ -201,12 +191,7 @@ We did not have difficulties because there are pretty good tutorials over the In
 
 **Deliverables**:
 
-1. You probably noticed when we added `xz-utils`, we have to rebuild
-   the whole image which took some time. What can we do to mitigate
-   that? Take a look at the Docker documentation on
-   [image layers](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers).
-   Tell us about the pros and cons to merge as much as possible of the
-   command. In other words, compare:
+1. You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that? Take a look at the Docker documentation on [image layers](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers). Tell us about the pros and cons to merge as much as possible of the command. In other words, compare:
 
   ```
   RUN command 1
@@ -230,37 +215,19 @@ We did not have difficulties because there are pretty good tutorials over the In
 
   Squash or flatten mean that multiples layers of an image will become one single layer. The result of this is to reduce the size of an image. It is a very powerful technique, however, it should not be used for every image. You will probably sacrify some functionality in the process, so it's important to think about it twice. But, let say, if we use someonelse's image and it's too heavy and we want to optimize its size, it is a good tool to use.
 
-2. Propose a different approach to architecture our images to be able
-   to reuse as much as possible what we have done. Your proposition
-   should also try to avoid as much as possible repetitions between
-   your images.
+2. Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images (wget curl vim rsyslog, ...). We can use an option to avoid installation of these package with --no-install-recommends.
 
-   First, we have to do what is explained in the previous question. Making
-   all instructions in one commands. It will reduce the number of layers. Then,   
-   we could optimize the size of the image removing all the packages we installed
-   and that we no longer need (wget curl vim rsyslog, ...) or use an option such as
-   --no-install-recommends.  
-   Since we know that Docker caches each layers and reuses them when it is needed, we
-   could separated the instruction that will be-reused in other Dockerfiles. Like this,
-   when Docker builds an image and had already cached one of the layers, it will simply
-   reuse it.
+   First of all, we have to make all instructions in one commands. It will reduce the number of layers of an image. Next, we could shrink the size of the image by removing all packages that are useless. Finally, we could separate instructions to permit to Docker to cache reusable layer. Like this, when Docker builds an image and had already cached one of the layers, it will simply reuse it.
 
-3. Provide the `/tmp/haproxy.cfg` file generated in the `ha` container
-   after each step.  Place the output into the `logs` folder like you
-   already did for the Docker logs in the previous tasks. Three files
-   are expected.
+3. Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step.  Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
 
    You can find the config file when only the ha container is started at `/logs/task_4/configFileHa`
 
    You can find the config file when ha and s1 containers are started at `/logs/task_4/configFileS1`
 
-    You can find the config file when ha, s1 and s2 containers are started at `/logs/task_4/configFileS2`
+   You can find the config file when ha, s1 and s2 containers are started at `/logs/task_4/configFileS2`
 
-
-   In addition, provide a log file containing the output of the
-   `docker ps` console and another file (per container) with
-   `docker inspect <container>`. Four files are expected.
-
+   In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect <container>`. Four files are expected.
 
    You can find the `docker ps` log file at `/logs/task_4/dockerPs`
 
@@ -270,9 +237,7 @@ We did not have difficulties because there are pretty good tutorials over the In
 
    You can find the `docker inspect s2` log file at `/logs/task_4/inspectS2`
 
-
-4. Based on the three output files you have collected, what can you
-   say about the way we generate it? What is the problem if any?
+4. Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?
 
 ### <a name="task-5"></a>Task 5: Generate a new load balancer configuration when membership changes
 
@@ -315,19 +280,15 @@ We did not have difficulties because there are pretty good tutorials over the In
    You can find the list of nodes present at `logs/task_5/step_2/nodes`
 
 
-3. Provide the configuration file after you stopped one container and
-   the list of nodes present in the `/nodes` folder. One file expected
-   with the command output. Two files are expected.
+3. Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected.
 
    You can find the config file at `/logs/task_5/step_3/configFile`
 
    You can find the list of nodes present at `logs/task_5/step_3/nodes`
 
-    In addition, provide a log file containing the output of the
-   `docker ps` console. One file expected.
+   In addition, provide a log file containing the output of the `docker ps` console. One file expected.
 
    You can find the `docker ps` log file at `/logs/task_5/step_3/docker_ps`
-
 
 4. (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
 
@@ -339,10 +300,7 @@ We did not have difficulties because there are pretty good tutorials over the In
 
 **Deliverables**:
 
-1. Take a screenshots of the HAProxy stat page showing more than 2 web
-   applications running. Additional screenshots are welcome to see a
-   sequence of experimentations like shutting down a node and starting
-   more nodes.
+1. Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes.
 
    On the screen below you can the HAProxy stat page with five web application running.
    ![HAProxy](images/task_6_1.png)
@@ -353,9 +311,7 @@ We did not have difficulties because there are pretty good tutorials over the In
    On this screen we restarted some other web applications.
    ![HAProxy](images/task_6_3.png)
 
-   Also provide the output of `docker ps` in a log file. At least
-   one file is expected. You can provide one output per step of your
-   experimentation according to your screenshots.
+   Also provide the output of `docker ps` in a log file. At least one file is expected. You can provide one output per step of your experimentation according to your screenshots.
 
    You can find the `docker ps` log file with the five web application running at `/logs/task_6/step_1/1_multiple_nodes/docker_ps`
 
@@ -363,13 +319,10 @@ We did not have difficulties because there are pretty good tutorials over the In
 
    You can find the `docker ps` log file after we started again some other applications at `/logs/task_6/step_1/3_up_again/docker_ps`
 
+2. Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
 
-2. Give your own feelings about the final solution. Propose
-   improvements or ways to do the things differently. If any, provide
-   references to your readings for the improvements.
-
-   It is a good solution because it can manage itself. Cluster creation is automated and information circulates within the network.
-   We can improve automatism to check when a node is down and create a new one. It would be enough to monitor logs to detect when a node is missing in the cluster.
+   The final solution seems good because it can manage itself. Creation of cluster is automated and information circulates within the network.
+   However, it would be better to find a solution that can change the configuration faster.
 
 3. (Optional:) Present a live demo where you add and remove a backend container.
 
@@ -380,7 +333,6 @@ But after all, we managed to get by.
 
 ### <a name="conclusion"></a>Conclusion
 
-In this lab, we learned how to use the HAProxy and how to configure a cluster of nodes. It was interesting, especially about Docker and load balancing. We think that is possible to improve the infrastructure by adding more automation.
-The lab was quite long to complete but in the end we learned a lot of useful things for our future work.
+In this lab, we learned how to use the HAProxy and how to configure a cluster of nodes. It was interesting, especially about Docker and load balancing. Moreover, it alspo helped us to understand how to use dynamic scaling. The lab was quite long to complete but in the end we learned a lot of useful things for our future work. After this lab, we are able to run multiple process in one container, to make the nodes communicate in a cluster, to react to crashes and automatically update and load a new configuration for the load balancer.
 
 ### <a name="sources"></a>Sources
