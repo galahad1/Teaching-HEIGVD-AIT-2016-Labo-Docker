@@ -53,7 +53,7 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 
 1. <a name="M1"></a>**[M1]** Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?
 
-   We think we can't use the current solution for production environment. The current solution is a static configuration. If we decide to add a server to the infrastructure, we need to do a lot of work. We must to edit the configuration file of HAProxy and declare each server manually. If the server shutdown or crash, we need to kill container and launch a new one. All this actions are done manually. It's a lot of work to set up and maintain.
+   We think we can't use the current solution for production environment. The current solution is a static configuration. If we decide to add a server to the infrastructure, we need to do a lot of work. We must edit the configuration file of HAProxy and declare each server manually. If the server shutdown or crash, we need to kill the container and launch a new one. All these actions are done manually. It's a lot of work to set up and maintain.
 
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new
    `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
@@ -68,11 +68,11 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
    sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg
    ```
 
-   After modifications of this file, we need to re-build it. When it's done, we can normally run the ha container. Also, we need to run also the new server s3.
+   After modifications of this file, we need to re-build it. When it's done, we can normally run the ha container. We also need to run the new server s3.
 
 3. <a name="M3"></a>**[M3]** Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.
 
-   The configuration should not be static but dynamic. With this current solution, we need to add new containers manually. It could be interesting to add new containers dynamically when the traffic increases. Moreover, it could be wise to launch a new container automatically when one crashes. This solution will be less painful for the system administrator.
+   The configuration should not be static but dynamic. With the current solution, we need to add new containers manually. It could be interesting to add new containers dynamically when the traffic increases. Moreover, it could be wise to launch a new container automatically when one crashes. This solution will be less painful for the system administrator.
 
 4. <a name="M4"></a>**[M4]** You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?
 
@@ -80,11 +80,11 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 
 5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks.
 
-   For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task.
+   For example, to monitor the distributed system as a whole, it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task.
 
    Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
 
-   For now, only one process can run. We have to work around this problem to log the nodes. This solution would help to maintain correctly our application and keep a trace automatically.
+   For now, only one process can run at a time. We have to work around this problem to log the nodes. This solution will help to maintain correctly our application and keep a trace automatically.
    To run multiple processes in one container, we need a process supervisor.
 
 6. <a name="M6"></a>**[M6]** In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the `run.sh` script, we see two calls to `sed` which will replace two lines in the `haproxy.cfg` configuration file just before we start `haproxy`. You clearly see that the configuration file has two lines and the script will replace these two lines.
