@@ -127,11 +127,11 @@ c160fa8469fa        softengheigvd/webapp   "/scripts/run.sh"        24 seconds a
 
 2. Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.
 
-The s6-overlay has a folder at /etc/services.d to create service directories at. Each service should be a directory, and each directory should have a run script.
+ The s6-overlay has a folder at /etc/services.d to create service directories at. Each service should be a directory, and each directory should have a run script.
 Each service is started with a completely blank environment, and it’s up to you to setup the environment variables. When the container starts up, all the environment variables are saved to /var/run/s6/container_environment/. The s6-overlay has a script to re-import all of those environment variables – with-contenv. It loads the environment variables, then chainloads into another program.
 
-A container’s main running process is the ENTRYPOINT and/or CMD instruction at the end of the Dockerfile. It is generally recommended that you separate areas of concern by using one service per container. That service may fork into multiple processes (for example, Apache web server starts multiple worker processes). It therefore is easy to have multiple processes.
-We are installing a process supervisor to have the possibility to run one or more processes at a time in a Docker container. It will give us the possibility to manage different application's processes. With a supervisor, we will be able to run a server and a process to log it.
+ A container’s main running process is the ENTRYPOINT and/or CMD instruction at the end of the Dockerfile. It is generally recommended that you separate areas of concern by using one service per container. That service may fork into multiple processes (for example, Apache web server starts multiple worker processes). It therefore is easy to have multiple processes.
+ We are installing a process supervisor to have the possibility to run one or more processes at a time in a Docker container. It will give us the possibility to manage different application's processes. With a supervisor, we will be able to run a server and a process to log it.
 
 We did not have difficulties because there are pretty good tutorials over the Internet to explain everything.
 
