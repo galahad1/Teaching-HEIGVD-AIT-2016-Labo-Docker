@@ -58,12 +58,7 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 2. <a name="M2"></a>**[M2]** Describe what you need to do to add new
    `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
 
-<<<<<<< HEAD
-   1. Edit ha/config/haproxy.cfg file to add a server s3 :
-=======
-   We need to change ha/config/haproxy.cfg file
-   and add a new line :
->>>>>>> d6f1cdd246936aabae4774755219b7e44f290739
+   1. Edit ha/config/haproxy.cfg file to add a server s3
    ```bash
    server s3 <s3>:3000 check
    ```
@@ -72,7 +67,6 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
    ```bash
    sed -i 's/<s3>/$S3_PORT_3000_TCP_ADDR/g' /usr/local/etc/haproxy/haproxy.cfg
    ```
-<<<<<<< HEAD
 
    After modifications of this file, we need to re-build it. When it's done, we can normally run the ha container. Also, we need to run also the new server s3.
 
@@ -89,50 +83,6 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
    For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task.
 
    Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
-=======
-   Since we modify the config of ha container, we need to re-build it. When
-   it's done, we can normally run the ha container and don't forget to run also
-   the new server s3.
-
-3. <a name="M3"></a>**[M3]** Based on your previous answers, you have
-   detected some issues in the current solution. Now propose a better
-   approach at a high level.
-
-   The configuration should not be static but dynamic.
-   We should use a tool or a program to communicate with te load balancer to tell
-   it which servers are up or down. Thanks to this, the configuration (when a new
-   node is created or when one is down) will be done automatically and it would be
-   less painful for the system administrator.
-
-4. <a name="M4"></a>**[M4]** You probably noticed that the list of web
-  application nodes is hardcoded in the load balancer
-  configuration. How can we manage the web app nodes in a more dynamic
-  fashion?
-
-  As said previously, we should user a special tool that
-  will say to the load balancer all servers that are connected. For this lab, we
-  will be introduced to the serf agent. Basically, its job is to notify the load
-  balancer when a node is up or down.
-
-5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a
-   typical infrastructure we tend to have not only one main process
-   (like the web server or the load balancer) running, but a few
-   additional processes on the side to perform management tasks.
-
-   For example to monitor the distributed system as a whole it is
-   common to collect in one centralized place all the logs produced by
-   the different machines. Therefore we need a process running on each
-   machine that will forward the logs to the central place. (We could
-   also imagine a central tool that reaches out to each machine to
-   gather the logs. That's a push vs. pull problem.) It is quite
-   common to see a push mechanism used for this kind of task.
-
-   Do you think our current solution is able to run additional
-   management processes beside the main web server / load balancer
-   process in a container? If no, what is missing / required to reach
-   the goal? If yes, how to proceed to run for example a log
-   forwarding process?
->>>>>>> d6f1cdd246936aabae4774755219b7e44f290739
 
    For now, only one process can run. We have to work around this problem to log the nodes. This solution would help to maintain correctly our application and keep a trace automatically.
    To run multiple processes in one container, we need a process supervisor.
@@ -141,13 +91,7 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 
    What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?
 
-<<<<<<< HEAD
-   In our current solution, we need to change two files to add more nodes. A really dynamic solution would be that each server announces itself to the other and the load balancer when it's up. 
-=======
-   No, it's not, because we need to change two files to add more nodes
-   (see answer 2). A better solution would be that each server announces
-   itself to the other and the load balancer when it's up.
->>>>>>> d6f1cdd246936aabae4774755219b7e44f290739
+   In our current solution, we need to change two files to add more nodes. A really dynamic solution would be that each server announces itself to the other and the load balancer when it's up.
 
 #### <a name="install-tools"></a>Install the tools
 
