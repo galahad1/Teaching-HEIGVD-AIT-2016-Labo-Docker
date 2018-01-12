@@ -72,11 +72,11 @@ The lab consists of 6 tasks and one initial task (the initial task should be qui
 
 3. <a name="M3"></a>**[M3]** Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.
 
-  The configuration should not be static but dynamic. With this current solution, we need to add new containers manually. It could be interesting to add new containers dynamically when the traffic increases. Moreover, it could be wise to launch a new container automatically when one crashes. This solution will be less painful for the system administrator.
+   The configuration should not be static but dynamic. With this current solution, we need to add new containers manually. It could be interesting to add new containers dynamically when the traffic increases. Moreover, it could be wise to launch a new container automatically when one crashes. This solution will be less painful for the system administrator.
 
 4. <a name="M4"></a>**[M4]** You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?
 
-  It should be possible to use a way that will tell the load balancer what servers are connected or not. In this lab, we use Serf Agent.
+   It should be possible to use a way that will tell the load balancer what servers are connected or not. In this lab, we use Serf Agent.
 
 5. <a name="M5"></a>**[M5]** In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks.
 
