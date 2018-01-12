@@ -205,15 +205,15 @@ We did not have difficulties because there are pretty good tutorials over the In
   RUN command 1 && command 2 && command 3
   ```
 
-  There are also some articles about techniques to reduce the image
-  size. Try to find them. They are talking about `squashing` or
-  `flattening` images.
+   A Docker image is built up from layers. Each layer is an instruction in the Dockerfile. It is a better practice to have a minimal number of layers in an image, because the size can become important really quickly. That's why putting all commands in one RUN instruction is a better practice; it will reduce the size of the image. On the other hand, each layer is cached, so when an image is re-built, it could be faster to not re-download all the packages. So in our case, the first solution is better. An other problem with a merge of commands, like presented here, is that it quickly becomes not trivial to read the Dockerfile when there are a lot of instructions.
 
-  A Docker image is built up from layers. Each layer is an instruction in the Dockerfile. It is a better practice to have a minimal number of layers in an image, because the size can become important really quickly. That's why putting all commands in one RUN instruction is a better practice; it will reduce the size of the image. On the other hand, each layer is cached, so when an image is re-built, it could be faster to not re-download all the packages. So in our case, the first solution is better.
-  An other problem with a merge of commands, like presented here, is that it quickly becomes not trivial to read the Dockerfile when there are a lot of instructions.  
-  Regarding the apt-get update and apt-get install, there are a lot of articles, saying that they should be put in one RUN command, because of a cache reason. A single apt-get update will be cached, as said previously, and not re-run every time you need to install something. So it might download an old version of the package.
+   There are also some articles about techniques to reduce the image size. Try to find them. They are talking about `squashing` or `flattening` images.
 
-  Squash or flatten mean that multiples layers of an image will become one single layer. The result of this is to reduce the size of an image. It is a very powerful technique, however, it should not be used for every image. You will probably sacrify some functionality in the process, so it's important to think about it twice. But, let say, if we use someonelse's image and it's too heavy and we want to optimize its size, it is a good tool to use.
+   Squash or flatten mean that multiples layers of an image will become one single layer. The result of this is to reduce the size of an image. It is a very powerful technique, however, it should not be used for every image.
+
+   flattening: when a docker container is exported and then imported again, the history of the container is not preserved. This can be used to reduce the size of a container. The image itself cannot be flattened. Source: http://tuhrig.de/flatten-a-docker-container-or-image/
+
+   squashing: the aim is to have an image with fewer and smaller layers. All of the layers beneath the initial FROM layer are squashed into a single layer. Other specific layers are also preserved. Source: http://jasonwilder.com/blog/2014/08/19/squashing-docker-images/
 
 2. Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images (wget curl vim rsyslog, ...). We can use an option to avoid installation of these package with --no-install-recommends.
 
